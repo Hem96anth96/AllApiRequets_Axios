@@ -1,6 +1,9 @@
 import express from "express";
 import axios from "axios";
 import bodyParser from "body-parser";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = 3000;
@@ -12,8 +15,8 @@ const API_URL = "https://secrets-api.appbrewery.com";
 // https://secrets-api.appbrewery.com/
 
 //TODO 1: Add your own bearer token from the previous lesson.
-const yourBearerToken = "16ce53f0-06f5-4274-8379-ce791258323c";
-const config = {
+const yourBearerToken = process.env.BEARER_TOKEN;
+const configObject = {
   headers: { Authorization: `Bearer ${yourBearerToken}` },
 };
 
@@ -26,7 +29,7 @@ app.get("/", (req, res) => {
 app.post("/get-secret", async (req, res) => {
   const searchId = req.body.id;
   try {
-    const result = await axios.get(API_URL + "/secrets/" + searchId, config);
+    const result = await axios.get(API_URL + "/secrets/" + searchId, configObject);
     res.render("index.ejs", { content: JSON.stringify(result.data) });
   } catch (error) {
     res.render("index.ejs", { content: JSON.stringify(error.response.data) });
@@ -43,7 +46,7 @@ app.post("/post-secret", async (req, res) => {
 
 
   try {
-    const response = await axios.post(API_URL +"/secrets", body,config);
+    const response = await axios.post(API_URL +"/secrets", body,configObject);
     res.render("index.ejs", { content: JSON.stringify(response.data) });
   } catch (error) {
     res.render("index.ejs", { content: JSON.stringify(error.response.data) });
@@ -62,7 +65,7 @@ app.post("/put-secret", async (req, res) => {
   };
 
   try {
-    const response = await axios.put(API_URL + "/secrets/" + searchId, body,config);
+    const response = await axios.put(API_URL + "/secrets/" + searchId, body,configObject);
     res.render("index.ejs", { content: JSON.stringify(response.data) });
   } catch (error) {
     res.render("index.ejs", { content: JSON.stringify(error.response.data) });
@@ -79,7 +82,7 @@ app.post("/patch-secret", async (req, res) => {
   };
 
   try {
-    const response = await axios.patch(API_URL + "/secrets/" + searchId, body,config);
+    const response = await axios.patch(API_URL + "/secrets/" + searchId, body,configObject);
     res.render("index.ejs", { content: JSON.stringify(response.data) });
   } catch (error) {
     res.render("index.ejs", { content: JSON.stringify(error.response.data) });
@@ -93,7 +96,7 @@ app.post("/delete-secret", async (req, res) => {
 
 
   try {
-    const response = await axios.delete(API_URL + "/secrets/" + searchId,config);
+    const response = await axios.delete(API_URL + "/secrets/" + searchId,configObject);
     res.render("index.ejs", { content: JSON.stringify(response.data) });
   } catch (error) {
     res.render("index.ejs", { content: JSON.stringify(error) });
